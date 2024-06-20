@@ -30,28 +30,32 @@ app.use("/", require("./routers"));
 require("./dbs/init.mongodb");
 
 let users = [1, 2, 3]; // { userId: { socketId, room } }
-
 io.on("connection", (socket) => {
   console.log("A user connected");
 
   socket.on("joinRoom", (room) => {
-    // Tham gia vào phòng
+    // Join the room
     socket.join(room);
-    // Thêm phòng vào danh sách
+    // Log the room join
     console.log(`User joined room: ${room}`);
+    // Notify the client that they have joined the room
     socket.emit("notification", { message: `You've joined room ${room}` });
   });
 
   socket.on("message", ({ cleanId, roomId, message }) => {
-    // Gửi tin nhắn đến tất cả các người dùng trong phòng
+    // Send message to all users in the room
     console.log({ message });
     console.log({ roomId });
     console.log({ cleanId });
 
     io.to(roomId).emit("message", { cleanId, message });
-    io.emit("notification", { message: "New notification12312321!" });
-
     io.to(roomId).emit("notification", { message: "New notification!" });
+  });
+
+  // Listen for global notification events
+  socket.on("globalNotification", ({ email, message }) => {
+    // Send notification to all connected clients
+    io.emit("notification", { email: email, message: message });
   });
 });
 
