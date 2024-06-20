@@ -47,7 +47,7 @@ io.on("connection", (socket) => {
     console.log({ message });
     console.log({ roomId });
     console.log({ cleanId });
-
+    io.emit("notification123", "Button was clicked!");
     io.to(roomId).emit("message", { cleanId, message });
 
     io.to(roomId).emit("notification", { message: "New notification!" });
