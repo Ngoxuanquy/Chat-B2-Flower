@@ -42,12 +42,16 @@ io.on("connection", (socket) => {
     socket.emit("notification", { message: `You've joined room ${room}` });
   });
 
+  socket.on("notification123", () => {
+    socket.emit("notification", { message: `You've joined room ` });
+  });
+
   socket.on("message", ({ cleanId, roomId, message }) => {
     // Gửi tin nhắn đến tất cả các người dùng trong phòng
     console.log({ message });
     console.log({ roomId });
     console.log({ cleanId });
-    io.emit("notification123", "Button was clicked!");
+
     io.to(roomId).emit("message", { cleanId, message });
 
     io.to(roomId).emit("notification", { message: "New notification!" });
